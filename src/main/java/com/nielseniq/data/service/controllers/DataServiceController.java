@@ -1,14 +1,18 @@
 package com.nielseniq.data.service.controllers;
 
+import com.nielseniq.data.service.constants.Constants;
 import com.nielseniq.data.service.entities.Product;
 import com.nielseniq.data.service.entities.Shopper;
+import com.nielseniq.data.service.entities.ShopperProductRelevance;
 import com.nielseniq.data.service.exceptions.DataServiceException;
+import com.nielseniq.data.service.helper.ShopperRelevanceConverter;
 import com.nielseniq.data.service.payload.ShopperRelevancePayload;
 import com.nielseniq.data.service.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,7 +46,13 @@ public class DataServiceController
     @PostMapping(value = "/shopperRelevance",consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> saveShopperRelevance(@RequestBody ShopperRelevancePayload shopperRelevancePayload) throws DataServiceException
     {
-        String response = shopperRelevanceService.saveShopperRelevance(shopperRelevancePayload);
+        if(!StringUtils.hasText(shopperRelevancePayload.getShopperId()) ||  shopperRelevancePayload.getShelfItemList().isEmpty())
+        {
+            throw new DataServiceException(Constants.MISSING_ITEMS,HttpStatus.BAD_REQUEST);
+        }
+        List<ShopperProductRelevance> relevanceList = ShopperRelevanceConverter.payloadToEntity(shopperRelevancePayload);
+
+        String response = shopperRelevanceService.saveShopperRelevance(relevanceList);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -55,6 +65,6 @@ public class DataServiceController
             throws DataServiceException
     {
         List<Product> response = productService.findByShopperIdCategoryAndBrand(shopperId,category,brand,limit);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

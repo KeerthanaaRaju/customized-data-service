@@ -3,6 +3,8 @@ package com.nielseniq.data.service;
 import com.nielseniq.data.service.entities.Product;
 import com.nielseniq.data.service.entities.Shopper;
 import com.nielseniq.data.service.entities.ShopperProductRelevance;
+import com.nielseniq.data.service.payload.ShelfItem;
+import com.nielseniq.data.service.payload.ShopperRelevancePayload;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -85,5 +87,26 @@ public class TestDataCreator
         prod.setBrand(brand);
         prod.setCategory(category);
         return prod;
+    }
+
+    public static ShopperRelevancePayload getShopperRelevancePayload(String shopperId)
+    {
+        List<ShelfItem> shelfItems = new LinkedList<>();
+        List<ShopperProductRelevance> productRelevances = getTestRelevanceList();
+        for(ShopperProductRelevance spr : productRelevances)
+        {
+            ShelfItem shelfItem = new ShelfItem(spr.getProductId(), spr.getRelevance());
+            shelfItems.add(shelfItem);
+        }
+
+        return getShopperRelevancePayload(shopperId,shelfItems);
+    }
+
+    public static ShopperRelevancePayload getShopperRelevancePayload(String shopperId,List<ShelfItem> shelfItems)
+    {
+        ShopperRelevancePayload payload = new ShopperRelevancePayload();
+        payload.setShopperId(shopperId);
+        payload.setShelfItemList(shelfItems);
+        return payload;
     }
 }

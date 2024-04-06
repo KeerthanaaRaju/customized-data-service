@@ -1,5 +1,6 @@
 package com.nielseniq.data.service.services;
 
+import com.nielseniq.data.service.TestDataCreator;
 import com.nielseniq.data.service.constants.Constants;
 import com.nielseniq.data.service.entities.Product;
 import com.nielseniq.data.service.exceptions.DataServiceException;
@@ -31,10 +32,7 @@ public class ProductServiceTest
     public void setUp()
     {
         MockitoAnnotations.initMocks(this);
-        product = new Product();
-        product.setProductId("p1");
-        product.setCategory("category");
-        product.setBrand("brand");
+        product = TestDataCreator.getProductObject("p1","category","brand");
     }
 
     @Test
@@ -44,7 +42,7 @@ public class ProductServiceTest
         String result="";
         try
         {
-           result  = productService.saveProduct(new Product());
+           result  = productService.saveProduct(product);
         }
         catch (DataServiceException e)
         {
@@ -55,11 +53,11 @@ public class ProductServiceTest
     }
 
     @Test
-    public void ProductService_CreateProduct_ShouldThrowException() throws DataServiceException
+    public void ProductService_CreateProduct_NullResult_ShouldThrowException() throws DataServiceException
     {
         Mockito.when(productRepository.save(ArgumentMatchers.any())).thenReturn(null);
         assertThrows(DataServiceException.class, () -> {
-            productService.saveProduct(new Product());
+            productService.saveProduct(product);
         });
     }
 
@@ -81,7 +79,7 @@ public class ProductServiceTest
     }
 
     @Test
-    public void ProductService_FindByIdProduct__ShouldThrowException()
+    public void ProductService_FindByIdProduct_NotAvailable_ShouldThrowException()
     {
         Mockito.when(productRepository.findById(ArgumentMatchers.anyString())).thenReturn(Optional.empty());
         assertThrows(EntityNotFoundException.class, () -> {

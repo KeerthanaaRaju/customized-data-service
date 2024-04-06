@@ -25,35 +25,20 @@ public class ShopperRelevanceServiceImpl implements ShopperRelevanceService
 
     @Transactional
     @Override
-    public String saveShopperRelevance(ShopperRelevancePayload relevancePayload) throws DataServiceException, DataIntegrityViolationException
+    public String saveShopperRelevance(List<ShopperProductRelevance> shopperProductRelevances) throws DataServiceException, DataIntegrityViolationException
     {
-        if(!StringUtils.hasText(relevancePayload.getShopperId()) ||  relevancePayload.getShelfItemList().isEmpty())
-        {
-            throw new DataServiceException(Constants.MISSING_ITEMS,HttpStatus.BAD_REQUEST);
-        }
-        List<ShopperProductRelevance> relevanceList = payloadToEntity(relevancePayload);
-        List<ShopperProductRelevance> updatedList = relevanceRepository.saveAll(relevanceList);
-        if(Objects.isNull(updatedList) || updatedList.size() != relevanceList.size())
+//        if(!StringUtils.hasText(relevancePayload.getShopperId()) ||  relevancePayload.getShelfItemList().isEmpty())
+//        {
+//            throw new DataServiceException(Constants.MISSING_ITEMS,HttpStatus.BAD_REQUEST);
+//        }
+//        List<ShopperProductRelevance> relevanceList = payloadToEntity(relevancePayload);
+        List<ShopperProductRelevance> updatedList = relevanceRepository.saveAll(shopperProductRelevances);
+        if(Objects.isNull(updatedList) || updatedList.size() != shopperProductRelevances.size())
         {
             throw new DataServiceException(Constants.RELEVANCE_SAVE_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return Constants.RELEVANCE_SAVED;
     }
 
-    public static List<ShopperProductRelevance> payloadToEntity(ShopperRelevancePayload payload)
-    {
-        List<ShopperProductRelevance> relevanceList = new LinkedList<>();
 
-        String shopperId = payload.getShopperId();
-        for(ShelfItem shelf : payload.getShelfItemList())
-        {
-            ShopperProductRelevance relevance = new ShopperProductRelevance();
-            relevance.setShopperId(shopperId);
-            relevance.setProductId(shelf.getProductId());
-            relevance.setRelevance(shelf.getRelevancyScore());
-
-            relevanceList.add(relevance);
-        }
-        return relevanceList;
-    }
 }

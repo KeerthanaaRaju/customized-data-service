@@ -1,33 +1,22 @@
 package com.nielseniq.data.service.repositories;
 
-import com.nielseniq.data.service.DataServiceApplication;
 import com.nielseniq.data.service.TestDataCreator;
 import com.nielseniq.data.service.entities.Product;
-import com.nielseniq.data.service.entities.Shopper;
-import com.nielseniq.data.service.entities.ShopperProductRelevance;
-import com.nielseniq.data.service.entities.ShopperRelevanceKey;
 import com.nielseniq.data.service.exceptions.DataServiceException;
-import lombok.NoArgsConstructor;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @RunWith(SpringRunner.class)
@@ -47,10 +36,7 @@ public class ProductRepositoryTest
     public void ProductRepository_Save_ReturnSavedProduct()
     {
         //Arrange
-        Product product = new Product();
-        product.setProductId("Test_Prod_Id");
-        product.setBrand("Nike");
-        product.setCategory("Shoes");
+        Product product = TestDataCreator.getProductObject("Test_Prod_Id","Nike","Shoes");
         //Act
         Product savedProduct = productRepository.save(product);
 

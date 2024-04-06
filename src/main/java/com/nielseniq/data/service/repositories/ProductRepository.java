@@ -14,6 +14,7 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product,String>
 {
+    // assuming that category, brand and shopper ic won't be null in the database
     @Query("SELECT p FROM Product p " +
             "INNER JOIN ShopperProductRelevance spr ON p.productId = spr.productId " +
             "WHERE (:shopperId IS NULL OR spr.shopperId = :shopperId) " +

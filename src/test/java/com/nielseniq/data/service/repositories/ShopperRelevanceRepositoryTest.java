@@ -1,5 +1,6 @@
 package com.nielseniq.data.service.repositories;
 
+import com.nielseniq.data.service.TestDataCreator;
 import com.nielseniq.data.service.entities.ShopperProductRelevance;
 import com.nielseniq.data.service.entities.ShopperRelevanceKey;
 import org.assertj.core.api.Assertions;
@@ -22,12 +23,8 @@ public class ShopperRelevanceRepositoryTest
     public void ShopperRelevanceRepository_Save()
     {
         //Arrange
-        ShopperProductRelevance spr = new ShopperProductRelevance();
-        ShopperRelevanceKey srk = new ShopperRelevanceKey();
-        spr.setProductId("Test_Prod_Id");
-        spr.setShopperId("Test_Shopper_Id");
+        ShopperProductRelevance spr = TestDataCreator.getRelevanceObject("Test_Prod_Id","Test_Shopper_Id",40.00000);
 
-        spr.setRelevance(40.00000);
         //Act
         ShopperProductRelevance savedRelevance = relevanceRepository.save(spr);
 

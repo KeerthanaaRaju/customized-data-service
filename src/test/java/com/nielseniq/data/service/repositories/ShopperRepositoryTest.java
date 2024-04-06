@@ -28,16 +28,16 @@ public class ShopperRepositoryTest
     public void ShopperRepository_SaveAll_ReturnSavedShopper() {
 
         //Arrange
-        Shopper shopper = new Shopper();
+        Shopper shopper = TestDataCreator.getShopperObject("Test_Shopper_Id","Shopper_name");
         shopper.setShopperId("Test_Shopper_Id");
-        shopper.setName("Keerthanaa");
+
         //Act
         Shopper savedShopper = shopperRepository.save(shopper);
 
         //Assert
         Assertions.assertThat(savedShopper).isNotNull();
         Assertions.assertThat(savedShopper.getShopperId()).isEqualTo("Test_Shopper_Id");
-        Assertions.assertThat(savedShopper.getName()).isEqualTo("Keerthanaa");
+        Assertions.assertThat(savedShopper.getName()).isEqualTo("Shopper_name");
     }
 
     @Test

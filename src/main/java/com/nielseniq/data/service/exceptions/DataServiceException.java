@@ -9,6 +9,7 @@ public class DataServiceException extends Exception
     @Getter
     @Setter
     private HttpStatus errorCode;
+
     public DataServiceException(String message, HttpStatus errorCode)
     {
         super(message);

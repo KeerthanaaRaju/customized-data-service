@@ -1,5 +1,6 @@
 package com.nielseniq.data.service.services;
 
+import com.nielseniq.data.service.TestDataCreator;
 import com.nielseniq.data.service.constants.Constants;
 import com.nielseniq.data.service.entities.Shopper;
 import com.nielseniq.data.service.exceptions.DataServiceException;
@@ -32,9 +33,7 @@ public class ShopperServiceTest
     public void setUp()
     {
         MockitoAnnotations.initMocks(this);
-        shopper = new Shopper();
-        shopper.setShopperId("s1");
-        shopper.setName("name");
+        shopper = TestDataCreator.getShopperObject("s1","name");
     }
 
     @Test
@@ -44,7 +43,7 @@ public class ShopperServiceTest
         String result="";
         try
         {
-            result  = shopperService.saveShopper(new Shopper());
+            result  = shopperService.saveShopper( shopper);
         }
         catch (DataServiceException e)
         {
@@ -55,11 +54,11 @@ public class ShopperServiceTest
     }
 
     @Test
-    public void ShopperService_CreateShopper_ShouldThrowException() throws DataServiceException
+    public void ShopperService_CreateShopper_NullResult_ShouldThrowException() throws DataServiceException
     {
         Mockito.when(shopperRepository.save(ArgumentMatchers.any())).thenReturn(null);
         assertThrows(DataServiceException.class, () -> {
-            shopperService.saveShopper(new Shopper());
+            shopperService.saveShopper(shopper);
         });
 
     }
@@ -82,7 +81,7 @@ public class ShopperServiceTest
     }
 
     @Test
-    public void ShopperService_FindByIdShopper__ShouldThrowException()
+    public void ShopperService_FindByIdShopper_NotFound_ShouldThrowException()
     {
         Mockito.when(shopperRepository.findById(ArgumentMatchers.anyString())).thenReturn(Optional.empty());
         assertThrows(EntityNotFoundException.class, () -> {

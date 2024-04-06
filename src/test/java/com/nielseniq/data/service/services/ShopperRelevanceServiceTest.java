@@ -30,7 +30,7 @@ public class ShopperRelevanceServiceTest
     private ShopperRelevanceServiceImpl relevanceService;
 
     private ShopperProductRelevance productRelevance;
-    private ShopperRelevancePayload srp;
+    private List<ShopperProductRelevance> relevanceList = new ArrayList<>();
 
     @Before
     public void setUp()
@@ -41,20 +41,18 @@ public class ShopperRelevanceServiceTest
         productRelevance.setProductId("p1");
         productRelevance.setRelevance(50.45236);
 
-        srp = new ShopperRelevancePayload();
-        srp.setShopperId("s1");
-        List<ShelfItem> shelfItems = Collections.singletonList(new ShelfItem("p1",50.45236));
-        srp.setShelfItemList(shelfItems);
+        relevanceList.add(productRelevance);
     }
 
     @Test
     public void RelevanceService_CreateObjects_ReturnsSuccess()
     {
+
         Mockito.when(relevanceRepository.saveAll(ArgumentMatchers.any())).thenReturn(Collections.singletonList(productRelevance));
         String result="";
         try
         {
-            result  = relevanceService.saveShopperRelevance(srp);
+            result  = relevanceService.saveShopperRelevance(relevanceList);
         }
         catch (DataServiceException e)
         {
@@ -64,11 +62,11 @@ public class ShopperRelevanceServiceTest
     }
 
     @Test
-    public void RelevanceService_CreateObjects_ShouldThrowException() throws DataServiceException
+    public void RelevanceService_CreateObjects_NullResult_ShouldThrowException() throws DataServiceException
     {
         Mockito.when(relevanceRepository.saveAll(ArgumentMatchers.any())).thenReturn(null);
         assertThrows(DataServiceException.class, () -> {
-            relevanceService.saveShopperRelevance(srp);
+            relevanceService.saveShopperRelevance(relevanceList);
         });
     }
 
@@ -77,19 +75,8 @@ public class ShopperRelevanceServiceTest
     {
         Mockito.when(relevanceRepository.saveAll(ArgumentMatchers.any())).thenReturn(Collections.singletonList(productRelevance));
         assertThrows(DataServiceException.class, () -> {
-            relevanceService.saveShopperRelevance(new ShopperRelevancePayload());
+            relevanceService.saveShopperRelevance(relevanceList);
         });
     }
 
-    @Test
-    public void RelevanceService_EntityToPayloadConversion()
-    {
-        List<ShelfItem> shelfItems = new ArrayList<>();
-        shelfItems.add(new ShelfItem("p1",55.8787));
-        shelfItems.add(new ShelfItem("p2",52.8787));
-        srp.setShelfItemList(shelfItems);
-
-        List<ShopperProductRelevance> relevanceList = ShopperRelevanceServiceImpl.payloadToEntity(srp);
-        Assertions.assertThat(relevanceList.size()).isEqualTo(srp.getShelfItemList().size());
-    }
 }
